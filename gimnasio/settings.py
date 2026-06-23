@@ -55,7 +55,8 @@ ROOT_URLCONF = 'gimnasio.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # Modifica ESTA línea exacta agregando la ruta de tus archivos:
+        'DIRS': [BASE_DIR / 'socios' / 'templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -115,9 +116,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
+# ==============================================================================
+# RUTA REAL HACIA TU CARPETA STATIC
+# ==============================================================================
 STATIC_URL = 'static/'
 
-# Configuración corregida para los directorios estáticos adicionales
+# Le indicamos a Django entrar a la subcarpeta 'gimnasio' para encontrar 'static'
 STATICFILES_DIRS = [
     BASE_DIR / 'gimnasio' / 'static',
 ]
