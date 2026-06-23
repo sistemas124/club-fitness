@@ -116,9 +116,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-# ==============================================================================
-# RUTA REAL HACIA TU CARPETA STATIC
-# ==============================================================================
 STATIC_URL = 'static/'
 
 # Le indicamos a Django entrar a la subcarpeta 'gimnasio' para encontrar 'static'
