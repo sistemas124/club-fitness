@@ -117,17 +117,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# Ruta corregida para que Django acceda a la carpeta 'static' dentro del subdirectorio 'gimnasio'
 STATICFILES_DIRS = [
     BASE_DIR / 'gimnasio' / 'static',
 ]
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/6.0/ref/settings/#default-auto-field
+# CORRECCIÓN: Se agrega la '/' inicial obligatoria
+MEDIA_URL = '/media/'
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-MEDIA_URL = 'media/'
-
-MEDIA_ROOT = BASE_DIR / 'gimnasio' / 'media'
+# CORRECCIÓN: Quitamos el subdirectorio 'gimnasio' para que coincida con la raíz del proyecto (estándar de Django)
+MEDIA_ROOT = BASE_DIR / 'media'

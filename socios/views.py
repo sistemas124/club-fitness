@@ -1,85 +1,80 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Socio, EvaluacionMedica
-from django.db.models import Count
+from .models import Socio
+from django.contrib import messages
 
+# 1. Vista de la plantilla inicial
 def ver_plantilla(request):
     return render(request, 'inicio.html')
 
-# 1. Registrar Socios (Backend captura inputs manuales del HTML)
+# 2. Vista para listar los socios en la tabla
+def lista_socios(request):
+    socios = Socio.objects.all()
+    return render(request, 'lista_socios.html', {'misSocios': socios})
+
+# 3. Vista para registrar un nuevo socio 
 def registrar_socio(request):
     if request.method == 'POST':
-        nombres = request.POST.get('nombres_apellidos')
-        foto = request.FILES.get('foto')
-        plan = request.POST.get('plan_contratado')
-        turno = request.POST.get('turno_preferido')
-        casillero = request.POST.get('tiene_casillero') == 'on' # Checkbox retorna 'on' si se marca
-        fecha = request.POST.get('fecha_inscripcion')
+        nombres_input = request.POST.get("nombres_apellidos")
+        foto_input = request.FILES.get("foto")
+        plan_input = request.POST.get("plan_contratado")
+        turno_input = request.POST.get("turno_preferido")
+        casillero_input = request.POST.get("tiene_casillero") == "on"
+        fecha_input = request.POST.get("fecha_inscripcion")
         
-        # Guardamos directamente en la base de datos estilo clase
-        nuevo_socio = Socio(
-            nombres_apellidos=nombres,
-            foto=foto,
-            plan_contratado=plan,
-            turno_preferido=turno,
-            tiene_casillero=casillero,
-            fecha_inscripcion=fecha
+        Socio.objects.create(
+            nombres=nombres_input,
+            foto=foto_input,
+            plan_contratado=plan_input,
+            turno_preferido=turno_input,
+            cuenta_con_casillero=casillero_input,
+            fecha_inscripcion=fecha_input
         )
-        nuevo_socio.save()
+        
+        # MENSAJE DE ÉXITO: Solo al crear
+        messages.success(request, 'Socio guardado exitosamente')
         return redirect('lista_socios')
         
     return render(request, 'registrar_socio.html')
 
-# 2. Listar Socios (Ficha para el Instructor)
-def lista_socios(request):
-    socios = Socio.objects.all()
-    return render(request, 'lista_socios.html', {'socios': socios})
+# 4. Vista para abrir el formulario de edición (AQUÍ NO SE GENERA NINGÚN MENSAJE)
+def editarSocio(request, id):
+    socio_a_editar = get_object_or_404(Socio, id=id)
+    return render(request, 'registrar_socio.html', {'socio': socio_a_editar})
 
-# 3. Registrar Evaluaciones Médicas (Recibe PDFs)
-def registrar_evaluacion(request):
-    socios = Socio.objects.all()
+# 5. Vista para procesar la actualización del socio editado
+def procesarActualizacionSocio(request):
     if request.method == 'POST':
-        socio_id = request.POST.get('socio')
-        socio_obj = get_object_or_404(Socio, id=socio_id)
-        pdf = request.FILES.get('certificado_pdf')
-        presion = request.POST.get('presion_arterial')
-        aptitud = request.POST.get('nivel_aptitud')
-        fecha = request.POST.get('fecha_evaluacion')
-        observaciones = request.POST.get('observaciones')
+        id_socio = request.POST.get("id")
+        socioActualizar = get_object_or_404(Socio, id=id_socio)
         
-        nueva_evaluacion = EvaluacionMedica(
-            socio=socio_obj,
-            certificado_pdf=pdf,
-            presion_arterial=presion,
-            nivel_aptitud=aptitud,
-            fecha_evaluacion=fecha,
-            observaciones=observaciones
-        )
-        nueva_evaluacion.save()
-        return redirect('reportes_ingresos')
+        socioActualizar.nombres = request.POST.get("nombres_apellidos")
+        socioActualizar.plan_contratado = request.POST.get("plan_contratado")
+        socioActualizar.turno_preferido = request.POST.get("turno_preferido")
+        socioActualizar.cuenta_con_casillero = request.POST.get("tiene_casillero") == "on"
+        socioActualizar.fecha_inscripcion = request.POST.get("fecha_inscripcion")
         
-    return render(request, 'registrar_evaluacion.html', {'socios': socios})
-
-# 4. Reporte y Cálculos (Proyección y Torniquete)
-def reportes_ingresos(request):
-    # Valores de planes asignados para el cálculo
-    # Mensual = $30, Semestral = $150, Anual = $280
-    socios = Socio.objects.all()
-    proyeccion_total = 0
-    
-    for s in socios:
-        if s.plan_contratado == 'Mensual':
-            proyeccion_total += 30
-        elif s.plan_contratado == 'Semestral':
-            proyeccion_total += 150
-        elif s.plan_contratado == 'Anual':
-            proyeccion_total += 280
+        foto_nueva = request.FILES.get("foto")
+        if foto_nueva:
+            socioActualizar.foto = foto_nueva
             
-    # Filtro para el Torniquete: Reporte de Socios Restringidos (No Aptos)
-    socios_no_aptos = EvaluacionMedica.objects.filter(nivel_aptitud='Restringido')
+        socioActualizar.save()
+        
+        # MENSAJE DE ÉXITO: Solo al actualizar físicamente en BDD
+        messages.success(request, 'Socio actualizado correctamente')
+        
+    return redirect('lista_socios')
+
+# 6. Vista para eliminar el socio por ID
+def eliminarSocio(request, id):
+    socioAEliminar = get_object_or_404(Socio, id=id)
+    socioAEliminar.delete()
     
-    context = {
-        'proyeccion_total': proyeccion_total,
-        'socios_no_aptos': socios_no_aptos,
-        'total_socios': socios.count()
-    }
-    return render(request, 'reportes.html', context)
+    # MENSAJE DE ÉXITO: Solo al eliminar
+    messages.success(request, 'Socio eliminado correctamente')
+    return redirect('lista_socios')
+
+def registrar_evaluacion(request):
+    return render(request, 'registrar_evaluacion.html')
+
+def reportes_ingresos(request):
+    return render(request, 'reportes.html')

@@ -1,151 +1,146 @@
+{% extends 'plantillaprincipal.html' %}
+{% load static %}
+
 {% block contenido %}
-<style>
-    body > header.header-section {
-        display: none !important;
-    }
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 
-    .menu-fijo-instructor {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        background-color: #0a0a0a !important;
-        border-bottom: 2px solid #f34e3a !important;
-        z-index: 999999 !important;
-        padding: 24px 0 !important;
-        box-shadow: 0px 4px 15px rgba(0,0,0,0.7) !important;
-    }
-
-    .nav-wrapper-gym {
-        display: flex !important;
-        justify-content: flex-start !important; 
-        align-items: center !important;
-        width: 100% !important;
-        padding-left: 40px !important;
-        padding-right: 40px !important;
-    }
-
-    .logo-area {
-        margin-right: 60px !important; 
-    }
-
-    .menu-fijo-instructor .nav-links-gym {
-        list-style: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        display: flex !important;
-        align-items: center !important;
-        gap: 24px !important; 
-    }
-
-    .menu-fijo-instructor .nav-links-gym li a {
-        color: #ffffff !important;
-        font-family: 'Oswald', sans-serif !important;
-        font-weight: 500 !important;
-        text-transform: uppercase !important;
-        font-size: 14px !important;
-        letter-spacing: 1px !important;
-        text-decoration: none !important;
-        transition: color 0.3s ease !important;
-        display: inline-block !important;
-        white-space: nowrap !important; 
-    }
-
-    .menu-fijo-instructor .nav-links-gym li a:hover {
-        color: #f34e3a !important;
-    }
-
-    /* Icono del usuario para Acceder */
-    .menu-fijo-instructor .nav-links-gym li.acceder-item a i {
-        color: #f34e3a !important;
-        margin-right: 6px !important;
-    }
-</style>
-
-<div class="menu-fijo-instructor">
-    <div class="container-fluid">
-        <div class="nav-wrapper-gym">
-            
-            <div class="logo-area">
-                <a href="{% url 'inicio_socios' %}" style="text-decoration: none !important;">
-                    <span style="color: white !important; font-weight: bold; font-size: 24px; font-family: 'Oswald', sans-serif; letter-spacing: 1px;">PONI<span style="color: #f34e3a;">GYM.</span></span>
-                </a>
-            </div>
-            
-            <div class="menu-area">
-                <ul class="nav-links-gym">
-                    <li><a href="{% url 'inicio_socios' %}">Inicio</a></li>
-                    <li><a href="{% url 'registrar_socio' %}">Registrar Socio</a></li>
-                    <li><a href="{% url 'lista_socios' %}" style="color: #f34e3a !important;">Lista de Socios</a></li>
-                    <li><a href="{% url 'registrar_evaluacion' %}">Evaluación Médica</a></li>
-                    <li><a href="{% url 'reportes_ingresos' %}">Reportes e Ingresos</a></li>
-                    <li class="acceder-item">
-                        <a href="/admin/">
-                            <i class="fa fa-user"></i>Acceder
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
+<div class="container-fluid bg-dark text-white py-5" style="min-height: 80vh;">
+    <div class="container bg-black p-5 rounded border border-secondary my-5 shadow">
+        
+        <div class="d-flex justify-content-between align-items-center border-bottom border-danger pb-3 mb-4">
+            <h2 class="font-weight-bold text-uppercase m-0 text-white">
+                📋 Fichas de Socios Activos <span class="text-danger">(Consulta de Instructor)</span>
+            </h2>
+            <a href="{% url 'registrar_socio' %}" class="btn btn-info font-weight-bold text-uppercase">
+                <i class="fa fa-plus-circle mr-1"></i> Nuevo Socio
+            </a>
         </div>
+        
+        <div class="table-responsive">
+            <table id="tbl_socios" class="table table-dark table-striped table-bordered text-center align-middle w-100">
+                <thead class="bg-danger text-white text-uppercase font-weight-bold">
+                    <tr>
+                        <th>ID</th>
+                        <th>Foto</th>
+                        <th>Nombre</th>
+                        <th>Plan</th>
+                        <th>Turno</th>
+                        <th>Casillero</th>
+                        <th>Inscripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for socio in misSocios %}
+                    <tr>
+                        <td>{{ socio.id }}</td>
+                        <td>
+                            {% if socio.foto %}
+                                <a href="{{ socio.foto.url }}" target="_blank">
+                                    <img src="{{ socio.foto.url }}" class="rounded-circle border border-danger" style="width: 40px; height: 40px; object-fit: cover;">
+                                </a>
+                            {% else %}
+                                <span class="text-muted small">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td class="font-weight-bold text-left">{{ socio.nombres }}</td>
+                        <td>{{ socio.plan_contratado }}</td>
+                        <td>{{ socio.turno_preferido }}</td>
+                        <td>{% if socio.cuenta_con_casillero %} Sí ✅ {% else %} No ❌ {% endif %}</td>
+                        <td class="text-secondary">{{ socio.fecha_inscripcion }}</td>
+                        <td>
+                            <a href="/editarSocio/{{ socio.id }}/" class="btn btn-sm btn-outline-warning" title="Editar Socio">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            
+                            <a href="/eliminarSocio/{{ socio.id }}/" 
+                               title="Eliminar Socio"
+                               onclick="confirmarEliminacion(event, '/eliminarSocio/{{ socio.id }}/')"
+                               class="btn btn-sm btn-outline-danger">
+                                <i class="fa fa-trash"></i>
+                            </a>
+
+                            {% if socio.foto %}                                     
+                                <a title="Ver Imagen" class="btn btn-sm btn-outline-info" href="{{ socio.foto.url }}" target="_blank">
+                                    <i class="fa fa-image"></i>
+                                </a>    
+                                               
+                                <a title="Descargar Imagen" class="btn btn-sm btn-outline-light" href="{{ socio.foto.url }}" download="{{ socio.nombres }}_foto">
+                                    <i class="fa fa-download"></i>
+                                </a>                             
+                            {% else %}
+                                <a title="No hay imagen" class="btn btn-sm btn-outline-info disabled" href="javascript:void(0)">
+                                    <i class="fa fa-image"></i>
+                                </a>    
+                                               
+                                <a title="No hay imagen" class="btn btn-sm btn-outline-light disabled" href="javascript:void(0)">
+                                    <i class="fa fa-download"></i>
+                                </a>  
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
     </div>
 </div>
 
-<section class="contact-section spad" style="background-color: #151515; min-height: 90vh; padding-top: 160px; padding-bottom: 60px;">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                
-                <div style="background-color: #0a0a0a; color: white; padding: 40px; border-radius: 8px; border: 1px solid #252525; box-shadow: 0px 4px 15px rgba(0,0,0,0.5);">
-                    
-                    <h2 style="font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 26px; letter-spacing: 1px; color: white;">
-                        📋 Fichas de Socios Activos <span style="color: #f34e3a;">(Consulta de Instructor)</span>
-                    </h2>
-                    <hr style="border-color: #f34e3a; margin-bottom: 30px;">
-                    
-                    <div class="table-responsive">
-                        <table class="table" style="background-color: #1a1a1a; color: white !important; border-collapse: collapse; margin-bottom: 0; width: 100%;">
-                            <thead>
-                                <tr style="background-color: #f34e3a;">
-                                    <th style="color: white !important; padding: 15px; border: none; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 14px;">Foto</th>
-                                    <th style="color: white !important; padding: 15px; border: none; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 14px;">Nombre</th>
-                                    <th style="color: white !important; padding: 15px; border: none; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 14px;">Plan</th>
-                                    <th style="color: white !important; padding: 15px; border: none; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 14px;">Turno</th>
-                                    <th style="color: white !important; padding: 15px; border: none; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 14px;">Casillero</th>
-                                    <th style="color: white !important; padding: 15px; border: none; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 14px;">Inscripción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for socio in socios %}
-                                <tr style="background-color: #1a1a1a !important; color: white !important; border-bottom: 1px solid #2d2d2d;">
-                                    <td style="padding: 15px; vertical-align: middle; border: none;">
-                                        {% if socio.foto %}
-                                            <img src="{{ socio.foto.url }}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #f34e3a;">
-                                        {% else %}
-                                            <span style="color: #6c757d; font-size: 13px;">No foto</span>
-                                        {% endif %}
-                                    </td>
-                                    <td style="color: white !important; padding: 15px; vertical-align: middle; font-weight: 600; border: none;">{{ socio.nombres_apellidos }}</td>
-                                    <td style="color: white !important; padding: 15px; vertical-align: middle; border: none;">{{ socio.plan_contratado }}</td>
-                                    <td style="color: white !important; padding: 15px; vertical-align: middle; border: none;">{{ socio.turno_preferido }}</td>
-                                    <td style="color: white !important; padding: 15px; vertical-align: middle; border: none;">{% if socio.tiene_casillero %} Sí ✅ {% else %} No ❌ {% endif %}</td>
-                                    <td style="color: #c4c4c4 !important; padding: 15px; vertical-align: middle; border: none;">{{ socio.fecha_inscripcion }}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="6" class="text-center" style="padding: 40px; color: #6c757d; background-color: #111111; border: none;">
-                                        <i class="fa fa-info-circle" style="color: #f34e3a; margin-right: 5px;"></i> No hay socios registrados en el sistema todavía.
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                </div>
-                
-            </div>
-        </div>
-    </div>
-</section>
-{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('#tbl_socios').DataTable({
+        "language": {
+            "lengthMenu": "Mostrar _MENU_ registros por página",
+            "zeroRecords": "No se encontraron resultados",
+            "info": "Mostrando página _PAGE_ de _PAGES_",
+            "infoEmpty": "No hay registros disponibles",
+            "infoFiltered": "(filtrado de _MAX_ registros totales)",
+            "search": "Buscar:",
+            "paginate": {
+                "first": "Primero",
+                "last": "Último",
+                "next": "Siguiente",
+                "previous": "Anterior"
+            }
+        }
+    });
+});
+
+function confirmarEliminacion(event, url){
+    event.preventDefault();
+
+    Swal.fire({
+        title: "¿Está seguro de eliminar este socio?",
+        text: "No podrá revertir esta acción de la base de datos",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script>
+
+<script>
+    {% if messages %}
+        {% for message in messages %}
+            Swal.fire({
+                title: "¡Operación Exitosa!",
+                text: "{{ message }}",
+                icon: "success",
+                confirmButtonColor: "#28a745"
+            });
+        {% endfor %}
+    {% endif %}
+</script>
+{% endblock contenido %}
