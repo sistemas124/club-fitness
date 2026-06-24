@@ -7,7 +7,7 @@ from .models import Socio, EvaluacionMedica
 def ver_plantilla(request):
     return render(request, 'inicio.html')
 
-# 2. Vista para listar los socios en la tabla (AQUÍ NO SE GENERAN MENSAJES)
+# 2. Vista para listar los socios en la tabla
 def lista_socios(request):
     socios = Socio.objects.all()
     return render(request, 'lista_socios.html', {'misSocios': socios})
