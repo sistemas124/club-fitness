@@ -1,39 +1,164 @@
 {% block contenido %}
-<div style="background-color: #1a1a1a; color: white; padding: 40px; margin-top: 80px;">
-    <h2>🏋️‍♂️ Registrar Nuevo Socio del Club</h2>
-    <hr style="border-color: #f34e3a;">
-    <form method="POST" enctype="multipart/form-data" style="max-width: 60px0px;">
-        {% csrf_token %}
-        <div class="form-group mb-3">
-            <label>Nombres y Apellidos:</label>
-            <input type="text" name="nombres_apellidos" class="form-control" required>
+<!-- CONTROL DE ESTILOS: Menú idéntico con desplazamiento seguro a la izquierda -->
+<style>
+    /* Ocultamos el header original defectuoso de la plantilla */
+    body > header.header-section {
+        display: none !important;
+    }
+
+    .menu-fijo-instructor {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        background-color: #0a0a0a !important;
+        border-bottom: 2px solid #f34e3a !important;
+        z-index: 999999 !important;
+        padding: 24px 0 !important;
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.7) !important;
+    }
+
+    .nav-wrapper-gym {
+        display: flex !important;
+        justify-content: flex-start !important; 
+        align-items: center !important;
+        width: 100% !important;
+        padding-left: 40px !important;
+        padding-right: 40px !important;
+    }
+
+    .logo-area {
+        margin-right: 60px !important; 
+    }
+
+    /* Lista horizontal compacta */
+    .menu-fijo-instructor .nav-links-gym {
+        list-style: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 24px !important; 
+    }
+
+    .menu-fijo-instructor .nav-links-gym li a {
+        color: #ffffff !important;
+        font-family: 'Oswald', sans-serif !important;
+        font-weight: 500 !important;
+        text-transform: uppercase !important;
+        font-size: 14px !important;
+        letter-spacing: 1px !important;
+        text-decoration: none !important;
+        transition: color 0.3s ease !important;
+        display: inline-block !important;
+        white-space: nowrap !important;
+    }
+
+    .menu-fijo-instructor .nav-links-gym li a:hover {
+        color: #f34e3a !important;
+    }
+
+    /* Icono del usuario para Acceder */
+    .menu-fijo-instructor .nav-links-gym li.acceder-item a i {
+        color: #f34e3a !important;
+        margin-right: 6px !important;
+    }
+</style>
+
+<div class="menu-fijo-instructor">
+    <div class="container-fluid">
+        <div class="nav-wrapper-gym">
+            
+            <!-- Logo a la izquierda -->
+            <div class="logo-area">
+                <a href="{% url 'inicio_socios' %}" style="text-decoration: none !important;">
+                    <span style="color: white !important; font-weight: bold; font-size: 24px; font-family: 'Oswald', sans-serif; letter-spacing: 1px;">PONI<span style="color: #f34e3a;">GYM.</span></span>
+                </a>
+            </div>
+            
+            <!-- Menú completo agrupado con "Registrar Socio" activo en naranja -->
+            <div class="menu-area">
+                <ul class="nav-links-gym">
+                    <li><a href="{% url 'inicio_socios' %}">Inicio</a></li>
+                    <li><a href="{% url 'registrar_socio' %}" style="color: #f34e3a !important;">Registrar Socio</a></li>
+                    <li><a href="{% url 'lista_socios' %}">Lista de Socios</a></li>
+                    <li><a href="{% url 'registrar_evaluacion' %}">Evaluación Médica</a></li>
+                    <li><a href="{% url 'reportes_ingresos' %}">Reportes e Ingresos</a></li>
+                    <li class="acceder-item">
+                        <a href="/admin/">
+                            <i class="fa fa-user"></i>Acceder
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
         </div>
-        <div class="form-group mb-3">
-            <label>Foto de Credencial (Webcam / Archivo):</label>
-            <input type="file" name="foto" class="form-control" accept="image/*" required>
-        </div>
-        <div class="form-group mb-3">
-            <label>Plan Contratado:</label>
-            <select name="plan_contratado" class="form-control" required>
-                <option value="Mensual">Mensual ($30)</option>
-                <option value="Semestral">Semestral ($150)</option>
-                <option value="Anual">Anual ($280)</option>
-            </select>
-        </div>
-        <div class="form-group mb-3">
-            <label>Turno Preferido:</label><br>
-            <input type="radio" name="turno_preferido" value="Mañana" checked> Mañana 🌅
-            <input type="radio" name="turno_preferido" value="Tarde" class="ms-3"> Tarde ☀️
-            <input type="radio" name="turno_preferido" value="Noche" class="ms-3"> Noche 🌙
-        </div>
-        <div class="form-group mb-3">
-            <input type="checkbox" name="tiene_casillero"> <label>¿Alquila Casillero?</label>
-        </div>
-        <div class="form-group mb-3">
-            <label>Fecha de Inscripción:</label>
-            <input type="date" name="fecha_inscripcion" class="form-control" required>
-        </div>
-        <button type="submit" class="btn style-btn" style="background-color: #f34e3a; color: white;">Guardar Socio</button>
-    </form>
+    </div>
 </div>
+
+<!-- SECCIÓN DEL FORMULARIO (Con padding-top: 160px para evitar superposiciones) -->
+<section class="contact-section spad" style="background-color: #151515; min-height: 90vh; padding-top: 160px; padding-bottom: 60px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                
+                <div style="background-color: #0a0a0a; color: white; padding: 40px; border-radius: 8px; border: 1px solid #252525; box-shadow: 0px 4px 15px rgba(0,0,0,0.5);">
+                    
+                    <h2 style="font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 26px; letter-spacing: 1px; color: white;">
+                        🏋️‍♂️ Registrar Nuevo <span style="color: #f34e3a;">Socio del Club</span>
+                    </h2>
+                    <hr style="border-color: #f34e3a; margin-bottom: 30px;">
+                    
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="form-group mb-4">
+                            <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Nombres y Apellidos:</label>
+                            <input type="text" name="nombres_apellidos" class="form-control" style="background-color: #1a1a1a; border: 1px solid #333; color: white;" required>
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Foto de Credencial (Webcam / Archivo):</label>
+                            <input type="file" name="foto" class="form-control" accept="image/*" style="background-color: #1a1a1a; border: 1px solid #333; color: white;" required>
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Plan Contratado:</label>
+                            <select name="plan_contratado" class="form-control" style="background-color: #1a1a1a; border: 1px solid #333; color: white; height: 45px;" required>
+                                <option value="Mensual">Mensual ($30)</option>
+                                <option value="Semestral">Semestral ($150)</option>
+                                <option value="Anual">Anual ($280)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Turno Preferido:</label><br>
+                            <div style="margin-top: 5px;">
+                                <input type="radio" name="turno_preferido" value="Mañana" checked> <span style="color: #fff; margin-right: 15px;">Mañana 🌅</span>
+                                <input type="radio" name="turno_preferido" value="Tarde" class="ms-3"> <span style="color: #fff; margin-right: 15px;">Tarde ☀️</span>
+                                <input type="radio" name="turno_preferido" value="Noche" class="ms-3"> <span style="color: #fff;">Noche 🌙</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <input type="checkbox" name="tiene_casillero" id="tiene_casillero"> 
+                            <label for="tiene_casillero" style="color: #fff; font-weight: 600; cursor: pointer; margin-left: 5px;">¿Alquila Casillero?</label>
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Fecha de Inscripción:</label>
+                            <input type="date" name="fecha_inscripcion" class="form-control" style="background-color: #1a1a1a; border: 1px solid #333; color: white;" required>
+                        </div>
+                        
+                        <button type="submit" class="primary-btn" style="background-color: #f34e3a; color: white; border: none; width: 100%; text-align: center; cursor: pointer; font-weight: 700; padding: 14px 0; text-transform: uppercase; font-family: 'Oswald', sans-serif; letter-spacing: 1px;">
+                            GUARDAR SOCIO
+                        </button>
+                    </form>
+                    
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
