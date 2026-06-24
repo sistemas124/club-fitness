@@ -38,11 +38,11 @@
         border-radius: 4px; 
     }
 
-    /* NUEVA VALIDACIÓN: BORDE ROJO EXCLUSIVO CUANDO ESTÁ INCORRECTO */
+    /* VALIDACIÓN: BORDE ROJO EXCLUSIVO CUANDO ESTÁ INCORRECTO */
     .was-validated .form-control:invalid,
     .form-control.is-invalid {
         border: 2px solid #dc3545 !important;
-        background-image: none !important; /* Quita iconos molestos de Bootstrap */
+        background-image: none !important;
     }
 
     .was-validated .form-control:valid {
@@ -59,7 +59,7 @@
                     {% if socio %} 📝 Editar <span class="text-warning">Socio del Club</span> {% else %} 🏋️‍♂️ Registrar Nuevo <span class="text-danger">Socio del Club</span> {% endif %}
                 </h2>
                 
-                <form id="form_nuevo_socio" action="{% if socio %}{% url 'procesar_actualizacion_socio' %}{% else %}{% url 'registrar_socio' %}{% endif %}" method="POST" enctype="multipart/form-data" class="mt-4" novalidate>
+                <form id="form_nuevo_socio" action="{% if socio %}{% url 'editar_socio' socio.id %}{% else %}{% url 'registrar_socio' %}{% endif %}" method="POST" enctype="multipart/form-data" class="mt-4" novalidate>
                     {% csrf_token %}
                     
                     {% if socio %}
@@ -141,15 +141,15 @@
                         <input type="date" name="fecha_inscripcion" id="fecha_inscripcion" value="{% if socio %}{{ socio.fecha_inscripcion|date:'Y-m-d' }}{% endif %}" class="form-control bg-dark text-white border-secondary mt-2" style="background-color: #1a1a1a !important;" required>
                     </div>
                     
-                    <div class="row mt-5 gap-3">
-                        <div class="col-sm-6 mb-2">
-                            <a href="{% url 'lista_socios' %}" class="btn btn-outline-secondary btn-block font-weight-bold py-3 text-uppercase" style="border-width: 2px;">
+                    <div class="row mt-5">
+                        <div class="col-sm-6 mb-3 mb-sm-0">
+                            <a href="{% url 'lista_socios' %}" class="btn btn-outline-secondary btn-block font-weight-bold py-3 text-uppercase" style="border-width: 2px; font-family: 'Oswald', sans-serif; letter-spacing: 1px;">
                                 ❌ CANCELAR
                             </a>
                         </div>
-                        <div class="col-sm-6 mb-2">
-                            <button class="btn {% if socio %}btn-warning text-dark{% else %}btn-danger{% endif %} btn-block font-weight-bold py-3 text-uppercase" type="submit" style="{% if not socio %}background-color: #f34e3a; border: none;{% endif %} font-family: 'Oswald', sans-serif; letter-spacing: 1px;">
-                                <i class="fa fa-save mr-2"></i> {% if socio %} Guardar Cambios {% else %} Guardar Socio {% endif %}
+                        <div class="col-sm-6">
+                            <button class="btn btn-success btn-block font-weight-bold py-3 text-uppercase" type="submit" style="font-family: 'Oswald', sans-serif; letter-spacing: 1px;">
+                                <i class="fa fa-save mr-2"></i> GUARDAR CAMBIOS DEL SOCIO
                             </button>
                         </div>
                     </div>
@@ -170,9 +170,7 @@ const inputNombre = document.getElementById('nombres_apellidos');
 
 const tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png'];
 
-// REGLAS Y MENSAJES FLOTANTES TRADUCIDOS AL ESPAÑOL FÁCIL
 function aplicarTraduccionErrores() {
-    // Validación de nombres
     if (inputNombre.validity.valueMissing) {
         inputNombre.setCustomValidity("Debe rellenar este campo con el nombre del socio.");
     } else if (inputNombre.validity.patternMismatch) {
@@ -181,7 +179,6 @@ function aplicarTraduccionErrores() {
         inputNombre.setCustomValidity("");
     }
 
-    // Validación de Plan
     const inputPlan = document.getElementById('plan_contratado');
     if (inputPlan.validity.valueMissing) {
         inputPlan.setCustomValidity("Por favor, seleccione un plan de entrenamiento de la lista.");
@@ -189,7 +186,6 @@ function aplicarTraduccionErrores() {
         inputPlan.setCustomValidity("");
     }
 
-    // Validación de Fecha
     const inputFecha = document.getElementById('fecha_inscripcion');
     if (inputFecha.validity.valueMissing) {
         inputFecha.setCustomValidity("Por favor, ingrese una fecha válida.");
@@ -198,7 +194,6 @@ function aplicarTraduccionErrores() {
     }
 }
 
-// Escuchar cambios dinámicos mientras escribe
 inputNombre.addEventListener('input', function() {
     aplicarTraduccionErrores();
     const errorNombre = document.getElementById('error_nombre');
@@ -241,7 +236,6 @@ function quitarImagen(event) {
     fileInput.value = "";
 }
 
-// CONTROL DRAG & DROP
 ['dragenter', 'dragover'].forEach(eventName => {
     dropZone.addEventListener(eventName, (e) => {
         e.preventDefault();
@@ -268,15 +262,13 @@ dropZone.addEventListener('drop', (e) => {
     }
 });
 
-// INTERCEPTAR ENVÍO: PINTAR BORDES SÓLO CUANDO DAN CLICK EN GUARDAR
 form.addEventListener('submit', function(event) {
-    aplicarTraduccionErrores(); // Forzar textos en español actualizados
+    aplicarTraduccionErrores();
 
     if (!form.checkValidity()) {
         event.preventDefault();
         event.stopPropagation();
         
-        // Mostrar alerta limpia
         Swal.fire({
             icon: 'error',
             title: 'Datos Incompletos',
@@ -284,7 +276,6 @@ form.addEventListener('submit', function(event) {
         });
     }
     
-    // Activa la clase css para que se pinten de rojo los bordes incorrectos
     form.classList.add('was-validated');
 }, false);
 </script>

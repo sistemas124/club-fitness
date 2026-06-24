@@ -9,14 +9,19 @@ urlpatterns = [
     # Registro / Creación de socios
     path('registrar-socio/', views.registrar_socio, name='registrar_socio'),
     
-    # Edición / Actualización de socios (Basado en la lógica de tus estadios)
+    # Edición / Actualización de socios
     path('editarSocio/<int:id>/', views.editarSocio, name='editar_socio'),
-    path('procesarActualizacionSocio/', views.procesarActualizacionSocio, name='procesar_actualizacion_socio'),
     
     # Eliminación de socios
     path('eliminarSocio/<int:id>/', views.eliminarSocio, name='eliminar_socio'),
     
-    # Otras rutas que ya tenías
+    # --- EVALUACIONES MÉDICAS (RUTAS CORREGIDAS) ---
+    # Ruta para registrar una nueva evaluación médica
     path('registrar-evaluacion/', views.registrar_evaluacion, name='registrar_evaluacion'),
+    
+    # Nueva ruta: Permite editar una evaluación existente usando su ID
+    path('editar-evaluacion/<int:id>/', views.registrar_evaluacion, name='editar_evaluacion'),
+    
+    # Dashboard y Reportes
     path('reportes-ingresos/', views.reportes_ingresos, name='reportes_ingresos'),
 ]

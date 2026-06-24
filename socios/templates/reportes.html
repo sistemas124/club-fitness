@@ -2,18 +2,18 @@
 {% load static %}
 
 {% block contenido %}
-<div class="container-fluid bg-dark text-white py-5" style="min-height: 80vh;">
+<div class="container-fluid bg-dark text-white py-5" style="min-height: 80vh; padding-top: 140px !important;">
     <div class="container my-5">
         <div class="row justify-content-center">
-            <div class="col-md-10 bg-black p-5 rounded border border-secondary shadow">
+            <div class="col-md-10 bg-black p-5 rounded border border-secondary shadow" style="background-color: #0a0a0a !important;">
                 
-                <h1 class="font-weight-bold text-uppercase border-bottom border-danger pb-3 text-white">
+                <h1 class="font-weight-bold text-uppercase border-bottom border-danger pb-3 text-white" style="font-family: 'Oswald', sans-serif;">
                      Dashboard de Control: <span class="text-danger">Ingresos y Seguridad</span>
                 </h1>
                 
                 <div class="row mt-4">
                     <div class="col-12">
-                        <div class="card bg-danger text-white p-4 shadow-sm border-0 text-center text-md-left">
+                        <div class="card bg-danger text-white p-4 shadow-sm border-0 text-center text-md-left" style="background-color: #f34e3a !important;">
                             <h5 class="text-uppercase font-weight-bold mb-2 small text-white-50" style="letter-spacing: 1px;">💰 Proyección Total de Ingresos</h5>
                             <h2 class="display-4 font-weight-bold my-1">${{ proyeccion_total }} USD</h2>
                             <p class="text-white-50 small mb-0 mt-2">Basado en {{ total_socios }} membresías activas calculadas por el backend.</p>
@@ -21,9 +21,9 @@
                     </div>
                 </div>
 
-                <div class="card bg-dark text-white border-secondary mt-4 shadow-sm">
+                <div class="card bg-dark text-white border-secondary mt-4 shadow-sm" style="background-color: #0d0d0d !important;">
                     <div class="card-header bg-black border-secondary py-3">
-                        <h4 class="text-danger font-weight-bold h5 mb-0 text-uppercase">
+                        <h4 class="text-danger font-weight-bold h5 mb-0 text-uppercase" style="font-family: 'Oswald', sans-serif;">
                              Alerta de Torniquete: <span class="text-white">Accesos Denegados</span>
                         </h4>
                     </div>
@@ -41,15 +41,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for evaluacion in socios_no_aptos %}
+                                    {% for ev in socios_no_aptos %}
                                     <tr class="border-left border-danger" style="border-left-width: 5px !important;">
-                                        <td class="font-weight-bold text-warning">{{ evaluacion.socio.nombres_apellidos }}</td>
-                                        <td><span class="badge badge-danger px-3 py-2">{{ evaluacion.nivel_aptitud }}</span></td>
-                                        <td>{{ evaluacion.presion_arterial }}</td>
+                                        <td class="font-weight-bold text-warning">{{ ev.socio.nombres }}</td>
                                         <td>
-                                            <a href="{{ evaluacion.certificado_pdf.url }}" target="_blank" class="btn btn-info btn-sm font-weight-bold px-3">
-                                                <i class="fa fa-file-pdf-o mr-1"></i> VER PDF
-                                            </a>
+                                            <span class="badge badge-danger px-3 py-2">
+                                                {% if ev.nivel_aptitud == "RESTRINGIDO" %}⚠️ RESTRINGIDO{% else %}{{ ev.nivel_aptitud }}{% endif %}
+                                            </span>
+                                        </td>
+                                        <td class="text-white font-weight-bold">{{ ev.presion_arterial }}</td>
+                                        <td>
+                                            {% if ev.certificado_pdf %}
+                                                <a href="{{ ev.certificado_pdf.url }}" target="_blank" class="btn btn-info btn-sm font-weight-bold px-3">
+                                                    <i class="fa fa-file-pdf-o mr-1"></i> VER PDF
+                                                </a>
+                                            {% else %}
+                                                <span class="text-muted small">No cargado</span>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                     {% empty %}

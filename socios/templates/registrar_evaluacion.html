@@ -2,66 +2,149 @@
 {% load static %}
 
 {% block contenido %}
-<div class="container-fluid bg-dark text-white py-5" style="min-height: 80vh;">
+<style>
+    /* ESPACIADOS Y LABELS DEL FORMULARIO */
+    .form-group label, .form-group b { 
+        display: inline-block !important; 
+        margin-bottom: 12px !important; 
+        color: #c4c4c4; 
+        font-weight: 600; 
+        text-transform: uppercase; 
+        font-size: 13px;
+    }
+
+    /* CONTENEDOR DE ARRASTRE PARA EL PDF */
+    .contenedor-pdf-preview {
+        border: 2px dashed #444;
+        border-radius: 8px;
+        padding: 30px;
+        background-color: #0d0d0d;
+        text-align: center;
+        min-height: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: border-color 0.3s, background-color 0.3s;
+        cursor: pointer;
+    }
+    .contenedor-pdf-preview.dragover {
+        border-color: #f34e3a;
+        background-color: #151515;
+    }
+    .pdf-icon {
+        font-size: 45px;
+        color: #6c757d;
+        margin-bottom: 10px;
+    }
+    .pdf-texto {
+        color: #b0b0b0;
+        font-size: 14px;
+    }
+
+    /* VALIDACIÓN: BORDES DE CONTROL DE ERRORES */
+    .was-validated .form-control:invalid,
+    .form-control.is-invalid {
+        border: 2px solid #dc3545 !important;
+        background-image: none !important;
+    }
+    .was-validated .form-control:valid {
+        border: 2px solid #28a745 !important;
+    }
+</style>
+
+<div class="container-fluid bg-dark text-white py-5" style="min-height: 80vh; padding-top: 140px !important;">
     <div class="container my-5">
         <div class="row justify-content-center">
-            <div class="col-md-8 bg-black p-5 rounded border border-secondary shadow">
+            <div class="col-md-8 bg-black p-5 rounded border border-secondary shadow" style="background-color: #0a0a0a !important;">
                 
-                <h1 class="font-weight-bold text-uppercase border-bottom border-danger pb-3 text-white">
-                     Validar y Registrar <span class="text-danger">Certificado Médico Obligatorio</span>
-                </h1>
+                <h2 class="font-weight-bold text-uppercase border-bottom border-danger pb-3 text-white" style="font-family: 'Oswald', sans-serif;">
+                     {% if evaluacion %}📝 Editar {% else %}📋 Validar y Registrar {% endif %}<span class="text-danger">Certificado Médico Obligatorio</span>
+                </h2>
                 
-                <form id="form_evaluacion" method="POST" enctype="multipart/form-data" class="mt-4">
+                <form id="form_evaluacion" action="{% if evaluacion %}{% url 'editar_evaluacion' evaluacion.id %}{% else %}{% url 'registrar_evaluacion' %}{% endif %}" method="POST" enctype="multipart/form-data" class="mt-4" novalidate>
                     {% csrf_token %}
                     
-                    <div class="form-group mb-4">
+                    <div class="form-group mb-5">
                         <b>Seleccionar Socio:</b>
-                        <select name="socio" class="form-control bg-dark text-white border-secondary mt-2" required>
+                        <select name="socio" id="socio" class="form-control bg-dark text-white border-secondary mt-2" style="background-color: #1a1a1a !important; height: 45px;" required>
                             <option value="">-- Seleccione un socio --</option>
                             {% for s in lista_socios %}
-                                <option value="{{ s.id }}">{{ s.nombres_apellidos }}</option>
+                                <option value="{{ s.id }}" {% if evaluacion.socio.id == s.id %}selected{% endif %}>{{ s.nombres }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     
-                    <div class="form-group mb-4">
+                    <div class="form-group mb-5">
                         <b>Certificado Médico Externo (PDF Obligatorio):</b>
-                        <input type="file" name="certificado_pdf" class="form-control-file mt-2 text-secondary" accept="application/pdf" required>
+                        
+                        <div class="contenedor-pdf-preview mt-2 mb-3" id="drop_zone" onclick="document.getElementById('certificado_pdf').click();">
+                            <div>
+                                {% if evaluacion.certificado_pdf %}
+                                    <div class="pdf-icon" id="pdf_icon" style="color: #dc3545;">📄</div>
+                                    <div class="pdf-texto" id="pdf_texto">
+                                        <strong class="text-white">Documento Actual Guardado</strong><br>
+                                        <span class="text-muted">Haz clic o arrastra un nuevo archivo para reemplazarlo</span>
+                                    </div>
+                                {% else %}
+                                    <div class="pdf-icon" id="pdf_icon">📁</div>
+                                    <div class="pdf-texto" id="pdf_texto">Arrastra tu archivo PDF aquí o haz clic para examinar</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-center">
+                            <input type="file" name="certificado_pdf" id="certificado_pdf" accept="application/pdf" style="display: none;" onchange="visualizarPDF(this)" {% if not evaluacion %}required{% endif %}>
+                            
+                            <button type="button" class="btn btn-outline-light font-weight-bold px-4 py-2" onclick="quitarPDF(event)">
+                                🗑️ QUITAR
+                            </button>
+                            <button type="button" class="btn btn-danger font-weight-bold mx-3 px-4 py-2" style="background-color: #f34e3a; border: none;" onclick="event.stopPropagation(); document.getElementById('certificado_pdf').click();">
+                                📁 EXAMINAR ...
+                            </button>
+                        </div>
                     </div>
                     
-                    <div class="form-group mb-4">
+                    <div class="form-group mb-5">
                         <b>Presión Arterial:</b>
-                        <input type="text" name="presion_arterial" class="form-control bg-dark text-white border-secondary mt-2" placeholder="Ej: 120/80" required>
+                        <input type="text" name="presion_arterial" id="presion_arterial" value="{% if evaluacion %}{{ evaluacion.presion_arterial }}{% endif %}" class="form-control bg-dark text-white border-secondary mt-2" style="background-color: #1a1a1a !important; padding: 10px;" placeholder="Ej: 120/80" required>
                     </div>
                     
-                    <div class="form-group mb-4">
+                    <div class="form-group mb-5">
                         <b>Nivel de Aptitud Física (Control de Puerta):</b>
                         <div class="mt-2">
                             <div class="form-check form-check-inline mr-4">
-                                <input class="form-check-input" type="radio" name="nivel_aptitud" id="aptitud_apto" value="Apto" checked>
-                                <label class="form-check-label text-white" for="aptitud_apto">Apto para entrenar ¡Pasar! 🟢</label>
+                                <input class="form-check-input" type="radio" name="nivel_aptitud" id="aptitud_apto" value="Apto" {% if not evaluacion or evaluacion.nivel_aptitud == "APTO" %}checked{% endif %} style="transform: scale(1.2); vertical-align: middle;">
+                                <label class="form-check-label text-white ml-2" for="aptitud_apto" style="vertical-align: middle;">Apto para entrenar ¡Pasar! 🟢</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="nivel_aptitud" id="aptitud_restringido" value="Restringido">
-                                <label class="form-check-label text-white" for="aptitud_restringido">Restringido (Bloqueo Torniquete) 🔴</label>
+                                <input class="form-check-input" type="radio" name="nivel_aptitud" id="aptitud_restringido" value="Restringido" {% if evaluacion.nivel_aptitud == "RESTRINGIDO" %}checked{% endif %} style="transform: scale(1.2); vertical-align: middle;">
+                                <label class="form-check-label text-white ml-2" for="aptitud_restringido" style="vertical-align: middle;">Restringido (Bloqueo Torniquete) 🔴</label>
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-group mb-4">
+                    <div class="form-group mb-5">
                         <b>Fecha de Evaluación:</b>
-                        <input type="date" name="fecha_evaluacion" class="form-control bg-dark text-white border-secondary mt-2" required>
+                        <input type="date" name="fecha_evaluacion" id="fecha_evaluacion" value="{% if evaluacion %}{{ evaluacion.fecha_evaluacion|date:'Y-m-d' }}{% endif %}" class="form-control bg-dark text-white border-secondary mt-2" style="background-color: #1a1a1a !important;" required>
                     </div>
                     
-                    <div class="form-group mb-4">
+                    <div class="form-group mb-5">
                         <b>Observaciones Médicas:</b>
-                        <textarea name="observaciones" class="form-control bg-dark text-white border-secondary mt-2" rows="4" placeholder="Ingrese detalles u observaciones adicionales..." style="resize: none;"></textarea>
+                        <textarea name="observaciones" id="observaciones" class="form-control bg-dark text-white border-secondary mt-2" rows="4" placeholder="Ingrese detalles u observaciones adicionales..." style="background-color: #1a1a1a !important; resize: none;">{% if evaluacion %}{{ evaluacion.observaciones_medicas }}{% endif %}</textarea>
                     </div>
                     
-                    <div class="mt-5">
-                        <button class="btn btn-danger btn-block font-weight-bold py-3 text-uppercase" type="submit">
-                            <i class="fa fa-save mr-2"></i> Guardar Evaluación
-                        </button>
+                    <div class="row mt-5">
+                        <div class="col-sm-6 mb-3 mb-sm-0">
+                            <a href="{% url 'reportes_ingresos' %}" class="btn btn-outline-secondary btn-block font-weight-bold py-3 text-uppercase" style="border-width: 2px; font-family: 'Oswald', sans-serif; letter-spacing: 1px;">
+                                ❌ CANCELAR
+                            </a>
+                        </div>
+                        <div class="col-sm-6">
+                            <button class="btn btn-danger btn-block font-weight-bold py-3 text-uppercase" type="submit" style="background-color: #f34e3a; border: none; font-family: 'Oswald', sans-serif; letter-spacing: 1px;">
+                                <i class="fa fa-save mr-2"></i> {% if evaluacion %}Guardar Cambios{% else %}Guardar Evaluación{% endif %}
+                            </button>
+                        </div>
                     </div>
                 </form>
 
@@ -69,4 +152,84 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+const form = document.getElementById('form_evaluacion');
+const dropZone = document.getElementById('drop_zone');
+const fileInput = document.getElementById('certificado_pdf');
+const pdfIcon = document.getElementById('pdf_icon');
+const pdfTexto = document.getElementById('pdf_texto');
+
+function validarArchivo(file) {
+    if (file.type !== 'application/pdf') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Archivo no permitido',
+            text: 'Este campo requiere obligatoriamente un documento en formato PDF.'
+        });
+        quitarPDF(null);
+        return false;
+    }
+    return true;
+}
+
+function visualizarPDF(input) {
+    if (input.files && input.files[0]) {
+        if (!validarArchivo(input.files[0])) return;
+        
+        pdfIcon.innerHTML = "📄";
+        pdfIcon.style.color = "#dc3545"; 
+        pdfTexto.innerHTML = `<strong class="text-white">${input.files[0].name}</strong><br><span class="text-muted">(${Math.round(input.files[0].size/1024)} KB) - Listo para subir</span>`;
+    }
+}
+
+function quitarPDF(event) {
+    if(event) event.stopPropagation();
+    pdfIcon.innerHTML = "📁";
+    pdfIcon.style.color = "#6c757d";
+    pdfTexto.innerHTML = "Arrastra tu archivo PDF aquí o haz clic para examinar";
+    fileInput.value = "";
+}
+
+['dragenter', 'dragover'].forEach(eventName => {
+    dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    }, false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+    }, false);
+});
+
+dropZone.addEventListener('drop', (e) => {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+
+    if (files.length > 0) {
+        if (validarArchivo(files[0])) {
+            fileInput.files = files;
+            visualizarPDF(fileInput);
+        }
+    }
+});
+
+form.addEventListener('submit', function(event) {
+    if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        Swal.fire({
+            icon: 'error',
+            title: 'Formulario Incompleto',
+            text: 'Por favor completa todos los campos obligatorios antes de continuar.'
+        });
+    }
+    form.classList.add('was-validated');
+}, false);
+</script>
 {% endblock contenido %}
