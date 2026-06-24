@@ -21,8 +21,9 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
 </head>
 
-<body>
-    <header class="header-section">
+<body style="background-color: #151515;"> 
+    
+    <header class="header-section" style="position: fixed !important; top: 0; left: 0; width: 100%; z-index: 999999 !important; background-color: #0a0a0a !important; box-shadow: 0px 4px 15px rgba(0,0,0,0.6); padding: 15px 0;">
         <div class="container">
             <div class="logo">
                 <a href="{% url 'inicio_socios' %}">
@@ -32,7 +33,6 @@
             <div class="nav-menu">
                 <nav class="mainmenu mobile-menu">
                     <ul>
-                        <!-- ENLACES CORREGIDOS AL ESTILO DJANGO -->
                         <li class="active"><a href="{% url 'inicio_socios' %}">Inicio</a></li>
                         <li><a href="{% url 'registrar_socio' %}">Registrar Socio</a></li>
                         <li><a href="{% url 'lista_socios' %}">Lista de Socios</a></li>
@@ -50,9 +50,10 @@
         </div>
     </header>
     
-    <!-- Aquí es donde se inyecta el contenido de tus otros HTML -->
-    {% block contenido %}
-    {% endblock contenido %}
+    <main>
+        {% block contenido %}
+        {% endblock contenido %}
+    </main>
 
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
