@@ -3,7 +3,6 @@
     body > header.header-section {
         display: none !important;
     }
-
     .menu-fijo-instructor {
         position: fixed !important;
         top: 0 !important;
@@ -15,7 +14,6 @@
         padding: 24px 0 !important;
         box-shadow: 0px 4px 15px rgba(0,0,0,0.7) !important;
     }
-
     .nav-wrapper-gym {
         display: flex !important;
         justify-content: flex-start !important; 
@@ -24,12 +22,9 @@
         padding-left: 40px !important;
         padding-right: 40px !important;
     }
-
     .logo-area {
         margin-right: 60px !important; 
     }
-
-    /* Lista horizontal compacta */
     .menu-fijo-instructor .nav-links-gym {
         list-style: none !important;
         margin: 0 !important;
@@ -38,7 +33,6 @@
         align-items: center !important;
         gap: 24px !important; 
     }
-
     .menu-fijo-instructor .nav-links-gym li a {
         color: #ffffff !important;
         font-family: 'Oswald', sans-serif !important;
@@ -51,27 +45,33 @@
         display: inline-block !important;
         white-space: nowrap !important;
     }
-
     .menu-fijo-instructor .nav-links-gym li a:hover {
         color: #f34e3a !important;
     }
-
     .menu-fijo-instructor .nav-links-gym li.acceder-item a i {
         color: #f34e3a !important;
         margin-right: 6px !important;
+    }
+    
+    /* MEJORA DE INTERLINEADO Y RESPIRACIÓN DEL FORMULARIO */
+    .form-group label {
+        display: inline-block !important;
+        margin-bottom: 12px !important; 
+        line-height: 1.6 !important;
+    }
+    .form-control {
+        padding: 10px 12px !important; 
     }
 </style>
 
 <div class="menu-fijo-instructor">
     <div class="container-fluid">
         <div class="nav-wrapper-gym">
-            
             <div class="logo-area">
                 <a href="{% url 'inicio_socios' %}" style="text-decoration: none !important;">
                     <span style="color: white !important; font-weight: bold; font-size: 24px; font-family: 'Oswald', sans-serif; letter-spacing: 1px;">PONI<span style="color: #f34e3a;">GYM.</span></span>
                 </a>
             </div>
-            
             <div class="menu-area">
                 <ul class="nav-links-gym">
                     <li><a href="{% url 'inicio_socios' %}">Inicio</a></li>
@@ -80,13 +80,10 @@
                     <li><a href="{% url 'registrar_evaluacion' %}" style="color: #f34e3a !important;">Evaluación Médica</a></li>
                     <li><a href="{% url 'reportes_ingresos' %}">Reportes e Ingresos</a></li>
                     <li class="acceder-item">
-                        <a href="/admin/">
-                            <i class="fa fa-user"></i>Acceder
-                        </a>
+                        <a href="/admin/"><i class="fa fa-user"></i>Acceder</a>
                     </li>
                 </ul>
             </div>
-
         </div>
     </div>
 </div>
@@ -101,54 +98,50 @@
                     <h2 style="font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 26px; letter-spacing: 1px; color: white;">
                         📋 Validar y Registrar <span style="color: #f34e3a;">Certificado Médico Obligatorio</span>
                     </h2>
-                    <hr style="border-color: #f34e3a; margin-bottom: 30px;">
+                    <hr style="border-color: #f34e3a; margin-bottom: 35px;">
                     
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         
-                        <div class="form-group mb-4">
+                        <div class="form-group mb-5">
                             <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Seleccionar Socio:</label>
-                            {% if form.socio %}
-                                {{ form.socio }}
-                            {% else %}
-                                <select name="socio" class="form-control" style="background-color: #1a1a1a; border: 1px solid #333; color: white; height: 45px;" required>
-                                    <option value="">-- Seleccione un socio --</option>
-                                    </select>
-                            {% endif %}
+                            <select name="socio" class="form-control" style="background-color: #1a1a1a; border: 1px solid #333; color: white; height: 45px;" required>
+                                <option value="">-- Seleccione un socio --</option>
+                                </select>
                         </div>
                         
-                        <div class="form-group mb-4">
+                        <div class="form-group mb-5">
                             <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Certificado Médico Externo (PDF Obligatorio):</label>
                             <input type="file" name="certificado_pdf" class="form-control" accept="application/pdf" style="background-color: #1a1a1a; border: 1px solid #333; color: white;" required>
                         </div>
                         
-                        <div class="form-group mb-4">
+                        <div class="form-group mb-5">
                             <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Presión Arterial:</label>
                             <input type="text" name="presion_arterial" class="form-control" placeholder="Ej: 120/80" style="background-color: #1a1a1a; border: 1px solid #333; color: white;" required>
                         </div>
                         
-                        <div class="form-group mb-4">
-                            <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Nivel de Aptitud Física (Control de Puerta):</label><br>
-                            <div style="margin-top: 5px;">
-                                <input type="radio" name="nivel_aptitud" value="Apto" checked> 
-                                <span style="color: #fff; margin-right: 20px;">Apto para entrenar ¡Pasar! 🟢</span>
+                        <div class="form-group mb-5">
+                            <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Nivel de Aptitud Física (Control de Puerta):</label>
+                            <div style="margin-top: 10px;">
+                                <input type="radio" name="nivel_aptitud" value="Apto" checked style="transform: scale(1.1); vertical-align: middle;"> 
+                                <span style="color: #fff; margin-right: 25px; vertical-align: middle;">Apto para entrenar ¡Pasar! 🟢</span>
                                 
-                                <input type="radio" name="nivel_aptitud" value="Restringido" class="ms-3"> 
-                                <span style="color: #fff;">Restringido (Bloqueo Torniquete) 🔴</span>
+                                <input type="radio" name="nivel_aptitud" value="Restringido" class="ms-3" style="transform: scale(1.1); vertical-align: middle;"> 
+                                <span style="color: #fff; vertical-align: middle;">Restringido (Bloqueo Torniquete) 🔴</span>
                             </div>
                         </div>
 
-                        <div class="form-group mb-4">
+                        <div class="form-group mb-5">
                             <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Fecha de Evaluación:</label>
                             <input type="date" name="fecha_evaluacion" class="form-control" style="background-color: #1a1a1a; border: 1px solid #333; color: white;" required>
                         </div>
                         
-                        <div class="form-group mb-4">
+                        <div class="form-group mb-5">
                             <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Observaciones Médicas:</label>
-                            <textarea name="observaciones" class="form-control" rows="3" style="background-color: #1a1a1a; border: 1px solid #333; color: white; resize: none;"></textarea>
+                            <textarea name="observaciones" class="form-control" rows="4" style="background-color: #1a1a1a; border: 1px solid #333; color: white; resize: none; padding: 12px;"></textarea>
                         </div>
                         
-                        <button type="submit" class="primary-btn" style="background-color: #f34e3a; color: white; border: none; width: 100%; text-align: center; cursor: pointer; font-weight: 700; padding: 14px 0; text-transform: uppercase; font-family: 'Oswald', sans-serif; letter-spacing: 1px;">
+                        <button type="submit" class="primary-btn" style="background-color: #f34e3a; color: white; border: none; width: 100%; text-align: center; cursor: pointer; font-weight: 700; padding: 15px 0; text-transform: uppercase; font-family: 'Oswald', sans-serif; letter-spacing: 1px; margin-top: 10px;">
                             Guardar Evaluación
                         </button>
                     </form>

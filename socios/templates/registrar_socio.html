@@ -1,11 +1,8 @@
 {% block contenido %}
-<!-- CONTROL DE ESTILOS: Menú idéntico con desplazamiento seguro a la izquierda -->
 <style>
-    /* Ocultamos el header original defectuoso de la plantilla */
     body > header.header-section {
         display: none !important;
     }
-
     .menu-fijo-instructor {
         position: fixed !important;
         top: 0 !important;
@@ -17,7 +14,6 @@
         padding: 24px 0 !important;
         box-shadow: 0px 4px 15px rgba(0,0,0,0.7) !important;
     }
-
     .nav-wrapper-gym {
         display: flex !important;
         justify-content: flex-start !important; 
@@ -26,12 +22,9 @@
         padding-left: 40px !important;
         padding-right: 40px !important;
     }
-
     .logo-area {
         margin-right: 60px !important; 
     }
-
-    /* Lista horizontal compacta */
     .menu-fijo-instructor .nav-links-gym {
         list-style: none !important;
         margin: 0 !important;
@@ -40,7 +33,6 @@
         align-items: center !important;
         gap: 24px !important; 
     }
-
     .menu-fijo-instructor .nav-links-gym li a {
         color: #ffffff !important;
         font-family: 'Oswald', sans-serif !important;
@@ -53,30 +45,30 @@
         display: inline-block !important;
         white-space: nowrap !important;
     }
-
     .menu-fijo-instructor .nav-links-gym li a:hover {
         color: #f34e3a !important;
     }
-
-    /* Icono del usuario para Acceder */
     .menu-fijo-instructor .nav-links-gym li.acceder-item a i {
         color: #f34e3a !important;
         margin-right: 6px !important;
     }
+    
+    .form-group label {
+        display: inline-block !important;
+        margin-bottom: 10px !important;
+        line-height: 1.6 !important;   
+            }
 </style>
 
+<!-- BARRA DE NAVEGACIÓN -->
 <div class="menu-fijo-instructor">
     <div class="container-fluid">
         <div class="nav-wrapper-gym">
-            
-            <!-- Logo a la izquierda -->
             <div class="logo-area">
                 <a href="{% url 'inicio_socios' %}" style="text-decoration: none !important;">
                     <span style="color: white !important; font-weight: bold; font-size: 24px; font-family: 'Oswald', sans-serif; letter-spacing: 1px;">PONI<span style="color: #f34e3a;">GYM.</span></span>
                 </a>
             </div>
-            
-            <!-- Menú completo agrupado con "Registrar Socio" activo en naranja -->
             <div class="menu-area">
                 <ul class="nav-links-gym">
                     <li><a href="{% url 'inicio_socios' %}">Inicio</a></li>
@@ -85,18 +77,15 @@
                     <li><a href="{% url 'registrar_evaluacion' %}">Evaluación Médica</a></li>
                     <li><a href="{% url 'reportes_ingresos' %}">Reportes e Ingresos</a></li>
                     <li class="acceder-item">
-                        <a href="/admin/">
-                            <i class="fa fa-user"></i>Acceder
-                        </a>
+                        <a href="/admin/"><i class="fa fa-user"></i>Acceder</a>
                     </li>
                 </ul>
             </div>
-
         </div>
     </div>
 </div>
 
-<!-- SECCIÓN DEL FORMULARIO (Con padding-top: 160px para evitar superposiciones) -->
+<!-- SECCIÓN DEL FORMULARIO CON ESPACIOS AMPLIOS -->
 <section class="contact-section spad" style="background-color: #151515; min-height: 90vh; padding-top: 160px; padding-bottom: 60px;">
     <div class="container">
         <div class="row justify-content-center">
@@ -107,22 +96,25 @@
                     <h2 style="font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 26px; letter-spacing: 1px; color: white;">
                         🏋️‍♂️ Registrar Nuevo <span style="color: #f34e3a;">Socio del Club</span>
                     </h2>
-                    <hr style="border-color: #f34e3a; margin-bottom: 30px;">
+                    <hr style="border-color: #f34e3a; margin-bottom: 35px;">
                     
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         
-                        <div class="form-group mb-4">
+                        <!-- 1. Nombres y Apellidos (Aumentado a mb-5 para dar espacio de una línea completa) -->
+                        <div class="form-group mb-5">
                             <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Nombres y Apellidos:</label>
-                            <input type="text" name="nombres_apellidos" class="form-control" style="background-color: #1a1a1a; border: 1px solid #333; color: white;" required>
+                            <input type="text" name="nombres_apellidos" class="form-control" style="background-color: #1a1a1a; border: 1px solid #333; color: white; padding: 10px;" required>
                         </div>
                         
-                        <div class="form-group mb-4">
+                        <!-- 2. Foto de Credencial -->
+                        <div class="form-group mb-5">
                             <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Foto de Credencial (Webcam / Archivo):</label>
-                            <input type="file" name="foto" class="form-control" accept="image/*" style="background-color: #1a1a1a; border: 1px solid #333; color: white;" required>
+                            <input type="file" name="foto" class="form-control" accept="image/*" style="background-color: #1a1a1a; border: 1px solid #333; color: white; padding: 8px;" required>
                         </div>
                         
-                        <div class="form-group mb-4">
+                        <!-- 3. Plan Contratado -->
+                        <div class="form-group mb-5">
                             <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Plan Contratado:</label>
                             <select name="plan_contratado" class="form-control" style="background-color: #1a1a1a; border: 1px solid #333; color: white; height: 45px;" required>
                                 <option value="Mensual">Mensual ($30)</option>
@@ -131,26 +123,30 @@
                             </select>
                         </div>
                         
-                        <div class="form-group mb-4">
-                            <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Turno Preferido:</label><br>
-                            <div style="margin-top: 5px;">
-                                <input type="radio" name="turno_preferido" value="Mañana" checked> <span style="color: #fff; margin-right: 15px;">Mañana 🌅</span>
-                                <input type="radio" name="turno_preferido" value="Tarde" class="ms-3"> <span style="color: #fff; margin-right: 15px;">Tarde ☀️</span>
+                        <!-- 4. Turno Preferido -->
+                        <div class="form-group mb-5">
+                            <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Turno Preferido:</label>
+                            <div style="margin-top: 10px;">
+                                <input type="radio" name="turno_preferido" value="Mañana" checked> <span style="color: #fff; margin-right: 20px;">Mañana 🌅</span>
+                                <input type="radio" name="turno_preferido" value="Tarde" class="ms-3"> <span style="color: #fff; margin-right: 20px;">Tarde ☀️</span>
                                 <input type="radio" name="turno_preferido" value="Noche" class="ms-3"> <span style="color: #fff;">Noche 🌙</span>
                             </div>
                         </div>
                         
-                        <div class="form-group mb-4">
-                            <input type="checkbox" name="tiene_casillero" id="tiene_casillero"> 
-                            <label for="tiene_casillero" style="color: #fff; font-weight: 600; cursor: pointer; margin-left: 5px;">¿Alquila Casillero?</label>
+                        <!-- 5. Casillero -->
+                        <div class="form-group mb-5" style="padding-top: 5px;">
+                            <input type="checkbox" name="tiene_casillero" id="tiene_casillero" style="transform: scale(1.2); vertical-align: middle;"> 
+                            <label for="tiene_casillero" style="color: #fff; font-weight: 600; cursor: pointer; margin-left: 10px; vertical-align: middle;">¿Alquila Casillero?</label>
                         </div>
                         
-                        <div class="form-group mb-4">
+                        <!-- 6. Fecha de Inscripción -->
+                        <div class="form-group mb-5">
                             <label style="color: #c4c4c4; font-weight: 600; text-transform: uppercase; font-size: 13px;">Fecha de Inscripción:</label>
-                            <input type="date" name="fecha_inscripcion" class="form-control" style="background-color: #1a1a1a; border: 1px solid #333; color: white;" required>
+                            <input type="date" name="fecha_inscripcion" class="form-control" style="background-color: #1a1a1a; border: 1px solid #333; color: white; padding: 10px;" required>
                         </div>
                         
-                        <button type="submit" class="primary-btn" style="background-color: #f34e3a; color: white; border: none; width: 100%; text-align: center; cursor: pointer; font-weight: 700; padding: 14px 0; text-transform: uppercase; font-family: 'Oswald', sans-serif; letter-spacing: 1px;">
+                        <!-- Botón Guardar con margen superior -->
+                        <button type="submit" class="primary-btn" style="background-color: #f34e3a; color: white; border: none; width: 100%; text-align: center; cursor: pointer; font-weight: 700; padding: 15px 0; text-transform: uppercase; font-family: 'Oswald', sans-serif; letter-spacing: 1px; margin-top: 15px;">
                             GUARDAR SOCIO
                         </button>
                     </form>
