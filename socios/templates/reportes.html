@@ -1,50 +1,163 @@
 {% block contenido %}
-<div style="background-color: #1a1a1a; color: white; padding: 40px; margin-top: 80px;">
-    <h2>📊 Dashboard de Control: Ingresos y Seguridad del Acceso</h2>
-    <hr style="border-color: #f34e3a;">
-    
-    <!-- Sección Matemática de Recaudación -->
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div style="background: linear-gradient(45deg, #f34e3a, #ff7e67); padding: 25px; border-radius: 10px;">
-                <h4>💰 Proyección Total de Ingresos</h4>
-                <h1 style="font-weight: bold; margin-top: 10px;">${{ proyeccion_total }} USD</h1>
-                <p style="font-size: 13px;">Basado en {{ total_socios }} membresías activas calculadas por el backend.</p>
+<style>
+    body > header.header-section {
+        display: none !important;
+    }
+
+    .menu-fijo-instructor {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        background-color: #0a0a0a !important;
+        border-bottom: 2px solid #f34e3a !important;
+        z-index: 999999 !important;
+        padding: 24px 0 !important;
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.7) !important;
+    }
+
+    .nav-wrapper-gym {
+        display: flex !important;
+        justify-content: flex-start !important; 
+        align-items: center !important;
+        width: 100% !important;
+        padding-left: 40px !important;
+        padding-right: 40px !important;
+    }
+
+    .logo-area {
+        margin-right: 60px !important; 
+    }
+
+    /* Lista horizontal compacta */
+    .menu-fijo-instructor .nav-links-gym {
+        list-style: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 24px !important; 
+    }
+
+    .menu-fijo-instructor .nav-links-gym li a {
+        color: #ffffff !important;
+        font-family: 'Oswald', sans-serif !important;
+        font-weight: 500 !important;
+        text-transform: uppercase !important;
+        font-size: 14px !important;
+        letter-spacing: 1px !important;
+        text-decoration: none !important;
+        transition: color 0.3s ease !important;
+        display: inline-block !important;
+        white-space: nowrap !important;
+    }
+
+    .menu-fijo-instructor .nav-links-gym li a:hover {
+        color: #f34e3a !important;
+    }
+
+    .menu-fijo-instructor .nav-links-gym li.acceder-item a i {
+        color: #f34e3a !important;
+        margin-right: 6px !important;
+    }
+</style>
+
+<div class="menu-fijo-instructor">
+    <div class="container-fluid">
+        <div class="nav-wrapper-gym">
+            
+            <!-- Logo a la izquierda -->
+            <div class="logo-area">
+                <a href="{% url 'inicio_socios' %}" style="text-decoration: none !important;">
+                    <span style="color: white !important; font-weight: bold; font-size: 24px; font-family: 'Oswald', sans-serif; letter-spacing: 1px;">PONI<span style="color: #f34e3a;">GYM.</span></span>
+                </a>
+            </div>
+            
+            <!-- Menú completo agrupado con "Reportes e Ingresos" activo en naranja -->
+            <div class="menu-area">
+                <ul class="nav-links-gym">
+                    <li><a href="{% url 'inicio_socios' %}">Inicio</a></li>
+                    <li><a href="{% url 'registrar_socio' %}">Registrar Socio</a></li>
+                    <li><a href="{% url 'lista_socios' %}">Lista de Socios</a></li>
+                    <li><a href="{% url 'registrar_evaluacion' %}">Evaluación Médica</a></li>
+                    <li><a href="{% url 'reportes_ingresos' %}" style="color: #f34e3a !important;">Reportes e Ingresos</a></li>
+                    <li class="acceder-item">
+                        <a href="/admin/">
+                            <i class="fa fa-user"></i>Acceder
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- SECCIÓN DE REPORTES (Agregado padding-top: 160px para que el menú fijo no lo tape) -->
+<section class="contact-section spad" style="background-color: #151515; min-height: 90vh; padding-top: 160px; padding-bottom: 60px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                
+                <div style="background-color: #0a0a0a; color: white; padding: 40px; border-radius: 8px; border: 1px solid #252525; box-shadow: 0px 4px 15px rgba(0,0,0,0.5);">
+                    
+                    <h2 style="font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 26px; letter-spacing: 1px; color: white;">
+                        📊 Dashboard de Control: <span style="color: #f34e3a;">Ingresos y Seguridad del Acceso</span>
+                    </h2>
+                    <hr style="border-color: #f34e3a; margin-bottom: 35px;">
+                    
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div style="background: linear-gradient(135deg, #f34e3a 0%, #ca3a27 100%); padding: 30px; border-radius: 6px; margin-bottom: 40px; box-shadow: 0 4px 10px rgba(243, 78, 58, 0.3);">
+                                <h4 style="color: white; font-weight: 600; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; margin-bottom: 10px;">💰 Proyección Total de Ingresos</h4>
+                                <h1 style="font-family: 'Oswald', sans-serif; font-size: 48px; font-weight: 700; margin: 0;">${{ proyeccion_total }} USD</h1>
+                                <p style="color: rgba(255,255,255,0.8); font-size: 13px; margin-top: 10px; margin-bottom: 0;">Basado en {{ total_socios }} membresías activas calculadas por el backend.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background-color: #1a1a1a; padding: 25px; border-radius: 6px; border: 1px solid #2d2d2d; margin-top: 10px;">
+                        <h3 style="color: #f34e3a; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 18px; margin-bottom: 15px;">🚨 Alerta de Torniquete: <span style="color: white;">Accesos Denegados (Socios No Aptos)</span></h3>
+                        <p style="color: #c4c4c4; font-size: 14px; margin-bottom: 20px;">El sistema automático de la puerta bloqueará a los siguientes socios por prescripción o falta médica:</p>
+                        
+                        <div class="table-responsive">
+                            <table class="table" style="background-color: #1a1a1a; color: white !important; margin-bottom: 0; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="border-bottom: 2px solid #333;">
+                                        <th style="color: #f34e3a !important; font-size: 12px; text-transform: uppercase; border: none; padding: 12px 10px;">Socio</th>
+                                        <th style="color: #f34e3a !important; font-size: 12px; text-transform: uppercase; border: none; padding: 12px 10px;">Estado Médico</th>
+                                        <th style="color: #f34e3a !important; font-size: 12px; text-transform: uppercase; border: none; padding: 12px 10px;">Presión Arterial</th>
+                                        <th style="color: #f34e3a !important; font-size: 12px; text-transform: uppercase; border: none; padding: 12px 10px;">Certificado Clínico</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for evaluacion in socios_no_aptos %}
+                                    <tr style="border-left: 5px solid #ff4d4d; border-bottom: 1px solid #2d2d2d; color: white !important;">
+                                        <td style="color: #ff9999 !important; font-weight: bold; padding: 15px 10px; vertical-align: middle;">{{ evaluacion.socio.nombres_apellidos }}</td>
+                                        <td style="padding: 15px 10px; vertical-align: middle;"><span class="badge bg-danger" style="padding: 6px 10px;">{{ evaluacion.nivel_aptitud }}</span></td>
+                                        <td style="color: white !important; padding: 15px 10px; vertical-align: middle;">{{ evaluacion.presion_arterial }}</td>
+                                        <td style="padding: 15px 10px; vertical-align: middle;">
+                                            <a href="{{ evaluacion.certificado_pdf.url }}" target="_blank" class="primary-btn" style="padding: 6px 15px; font-size: 11px; background-color: #17a2b8; border: none; display: inline-block;">
+                                                📄 VER PDF
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-success" style="color: #28a745 !important; font-weight: 600; padding: 25px 0; border: none; font-size: 14px;">
+                                            ✅ Todos los socios evaluados se encuentran aptos para pasar el torniquete.
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                
             </div>
         </div>
     </div>
-
-    <!-- Reporte del Torniquete / Acceso Restringido -->
-    <h3 class="mt-5" style="color: #ff4d4d;">🚨 Alerta de Torniquete: Accesos Denegados (Socios No Aptos)</h3>
-    <p>El sistema automático de la puerta bloqueará a los siguientes socios por prescripción o falta médica:</p>
-    
-    <table class="table table-dark table-striped mt-3">
-        <thead>
-            <tr>
-                <th>Socio</th>
-                <th>Estado Médico</th>
-                <th>Presión Arterial</th>
-                <th>Certificado Clínico</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for evaluacion in socios_no_aptos %}
-            <tr style="border-left: 5px solid #ff4d4d;">
-                <td style="color: #ff9999; font-weight: bold;">{{ evaluacion.socio.nombres_apellidos }}</td>
-                <td><span class="badge bg-danger">{{ evaluacion.nivel_aptitud }}</span></td>
-                <td>{{ evaluacion.presion_arterial }}</td>
-                <td>
-                    <a href="{{ evaluacion.certificado_pdf.url }}" target="_blank" class="btn btn-sm btn-outline-info">
-                        📄 Ver Certificado PDF
-                    </a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4" class="text-center text-success">✅ Todos los socios evaluados se encuentran aptos para pasar el torniquete.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+</section>
 {% endblock %}
