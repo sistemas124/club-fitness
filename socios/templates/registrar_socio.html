@@ -1,0 +1,39 @@
+{% block contenido %}
+<div style="background-color: #1a1a1a; color: white; padding: 40px; margin-top: 80px;">
+    <h2>🏋️‍♂️ Registrar Nuevo Socio del Club</h2>
+    <hr style="border-color: #f34e3a;">
+    <form method="POST" enctype="multipart/form-data" style="max-width: 60px0px;">
+        {% csrf_token %}
+        <div class="form-group mb-3">
+            <label>Nombres y Apellidos:</label>
+            <input type="text" name="nombres_apellidos" class="form-control" required>
+        </div>
+        <div class="form-group mb-3">
+            <label>Foto de Credencial (Webcam / Archivo):</label>
+            <input type="file" name="foto" class="form-control" accept="image/*" required>
+        </div>
+        <div class="form-group mb-3">
+            <label>Plan Contratado:</label>
+            <select name="plan_contratado" class="form-control" required>
+                <option value="Mensual">Mensual ($30)</option>
+                <option value="Semestral">Semestral ($150)</option>
+                <option value="Anual">Anual ($280)</option>
+            </select>
+        </div>
+        <div class="form-group mb-3">
+            <label>Turno Preferido:</label><br>
+            <input type="radio" name="turno_preferido" value="Mañana" checked> Mañana 🌅
+            <input type="radio" name="turno_preferido" value="Tarde" class="ms-3"> Tarde ☀️
+            <input type="radio" name="turno_preferido" value="Noche" class="ms-3"> Noche 🌙
+        </div>
+        <div class="form-group mb-3">
+            <input type="checkbox" name="tiene_casillero"> <label>¿Alquila Casillero?</label>
+        </div>
+        <div class="form-group mb-3">
+            <label>Fecha de Inscripción:</label>
+            <input type="date" name="fecha_inscripcion" class="form-control" required>
+        </div>
+        <button type="submit" class="btn style-btn" style="background-color: #f34e3a; color: white;">Guardar Socio</button>
+    </form>
+</div>
+{% endblock %}
