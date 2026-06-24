@@ -55,7 +55,6 @@ ROOT_URLCONF = 'gimnasio.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # Modifica ESTA línea exacta agregando la ruta de tus archivos:
         'DIRS': [BASE_DIR / 'socios' / 'templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
@@ -118,7 +117,17 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# Le indicamos a Django entrar a la subcarpeta 'gimnasio' para encontrar 'static'
+# Ruta corregida para que Django acceda a la carpeta 'static' dentro del subdirectorio 'gimnasio'
 STATICFILES_DIRS = [
     BASE_DIR / 'gimnasio' / 'static',
 ]
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/6.0/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+MEDIA_URL = 'media/'
+
+MEDIA_ROOT = BASE_DIR / 'gimnasio' / 'media'
