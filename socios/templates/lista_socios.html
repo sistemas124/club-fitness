@@ -1,0 +1,36 @@
+{% block contenido %}
+<div style="background-color: #1a1a1a; color: white; padding: 40px; margin-top: 80px;">
+    <h2>📋 Fichas de Socios Activos (Consulta de Instructor)</h2>
+    <hr style="border-color: #f34e3a;">
+    <table class="table table-dark table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Foto</th>
+                <th>Nombre</th>
+                <th>Plan</th>
+                <th>Turno</th>
+                <th>Casillero</th>
+                <th>Inscripción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for socio in socios %}
+            <tr>
+                <td>
+                    {% if socio.foto %}
+                        <img src="{{ socio.foto.url }}" style="width: 50px; height: 50px; border-radius: 50%;">
+                    {% else %}
+                        No foto
+                    {% endif %}
+                </td>
+                <td>{{ socio.nombres_apellidos }}</td>
+                <td>{{ socio.plan_contratado }}</td>
+                <td>{{ socio.turno_preferido }}</td>
+                <td>{% if socio.tiene_casillero %} Sí ✅ {% else %} No ❌ {% endif %}</td>
+                <td>{{ socio.fecha_inscripcion }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
