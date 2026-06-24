@@ -2,12 +2,12 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # 1. Tu ruta original para ver la plantilla de PoniGym (Home)
-    path('', views.ver_plantilla, name='inicio_socios'),
+    # Ruta raíz (La que abre al entrar a http://127.0.0.1:8000/)
+    path('', views.inicio, name='inicio_socios'),
     
-    # 2. Ruta para el Dashboard del Administrador (Ver socios, casilleros y proyección de ingresos)
-    path('dashboard/administrador/', views.dashboard_administrador, name='dashboard_admin'),
-    
-    # 3. Ruta para el Instructor (Para buscar un socio y validar su certificado de salud/PDF)
-    path('socio/<int:socio_id>/ficha/', views.ficha_socio_instructor, name='ficha_socio'),
+    # Rutas para el menú de la plantilla
+    path('registrar/', views.registrar_socio, name='registrar_socio'),
+    path('socios/', views.lista_socios, name='lista_socios'),
+    path('evaluacion/', views.nueva_evaluacion, name='nueva_evaluacion'),
+    path('reportes/', views.reporte_ingresos, name='reporte_ingresos'),
 ]
