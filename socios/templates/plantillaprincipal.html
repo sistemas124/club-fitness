@@ -1,20 +1,17 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="PONIGYM Template">
-    <meta name="keywords" content="PONIGYM, unica, creative, html">
+    <meta name="description" content="Club Fitness Management">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>PONIGYM | Template</title>
+    <title>Club Fitness | Control de Membresías</title>
 
-    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Oswald:300,400,500,600,700&display=swap" rel="stylesheet">
 
-    <!-- Css Styles - Corregidos con etiquetas Static de Django -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/themify-icons.css' %}" type="text/css">
@@ -25,43 +22,35 @@
 </head>
 
 <body>
-    <!-- Header Section Begin -->
     <header class="header-section">
         <div class="container">
             <div class="logo">
-                <a href="#">
-                    <img src="{% static 'img/logo.png' %}" alt="">
+                <a href="/">
+                    <img src="{% static 'img/logo.png' %}" alt="Club Fitness">
                 </a>
             </div>
             <div class="nav-menu">
                 <nav class="mainmenu mobile-menu">
                     <ul>
-                        <li class="active"><a href="#">Home</a></li>
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Schedule</a></li>
-                        <li><a href="#">Portfolio</a></li>
-                        <li><a href="#">Blog</a>
-                            <ul class="dropdown">
-                                <li><a href="#">Blog Details</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="#">Contacts</a></li>
+                        <li class="active"><a href="/">Inicio</a></li>
+                        <li><a href="/registrar/">Registrar Socio</a></li>
+                        <li><a href="/socios/">Lista de Socios</a></li>
+                        <li><a href="/evaluacion/">Evaluación Médica</a></li>
+                        <li><a href="/reportes/">Reportes e Ingresos</a></li>
                     </ul>
                 </nav>
-                <div class="nav-right search-switch">
-                    <i class="ti-search"></i>
+                <div class="nav-right">
+                    <a href="/login/" style="color: #ffffff; font-weight: 700; font-size: 14px; text-transform: uppercase;">
+                        <i class="fa fa-user" style="color: #f34e3a; margin-right: 5px;"></i> Acceder
+                    </a>
                 </div>
             </div>
             <div id="mobile-menu-wrap"></div>
         </div>
     </header>
-    <!-- Header End -->
-
-    <!-- AQUÍ SE INYECTARÁ TODO EL CONTENIDO DINÁMICO DE INICIO.HTML -->
     {% block contenido %}
     {% endblock contenido %}
 
-    <!-- Js Scripts - Corregidos con etiquetas Static de Django -->
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
